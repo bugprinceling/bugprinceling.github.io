@@ -1,107 +1,87 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="玩桌游入门可以从哪些游戏开始？"><meta name="keywords" content=""><meta name="author" content="ZhengYoufu"><meta name="copyright" content="ZhengYoufu"><title>玩桌游入门可以从哪些游戏开始？ | Hexo</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">ZhengYoufu</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">4</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Hexo</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">玩桌游入门可以从哪些游戏开始？</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-11-02</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><div class="main-wrap content-wrap">
+<div class="headline">
 
-block top_img
-  - var top_img = page.top_img || theme.post_meta.top_img || theme.top_img || config.top_img
-  if (top_img && page.top_img !== false)
-    - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
-    - var flag = top_img === true ? 'no-bg' : ''
-    div#top-container(style=bg_img class=flag)
-      include ./includes/header.pug
-      #post-info
-        #post-title= page.title || _p('no_title')
-        #post-meta
-          if (theme.post_meta.date_type)
-            if (theme.post_meta.date_type === 'both')
-              time.post-meta__date
-                i.fa.fa-calendar(aria-hidden="true")
-                =' '+_p('post.created')+' '+date(page.date, config.date_format)
-                span.post-meta__separator |
-                i.fa.fa-calendar-check-o(aria-hidden="true")
-                =' '+_p('post.updated')+' '+date(page.updated, config.date_format)
-            else
-              - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
-              time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
-          if (theme.post_meta.categories && page.categories.data.length > 0)
-            if (theme.post_meta.date_type)
-              span.post-meta__separator |
-            each item, index in page.categories.data
-              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
-              a(href=url_for(item.path)).post-meta__categories #[=item.name]
-              if (index < page.categories.data.length - 1)
-                 i.fa.fa-angle-right(aria-hidden="true")
-          if (theme.disqus.enable && theme.disqus.count)
-            if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
-              span.post-meta__separator |
-            i.fa.fa-comment-o.post-meta__icon(aria-hidden="true")
-            a(href=url_for(page.path) + '#disqus_thread')
-              span.disqus-comment-count(data-disqus-identifier=page.path)
-          if (theme.wordcount && theme.wordcount.enable)
-            .post-meta-wordcount
-              span= _p('post.wordcount') + ': '
-              span.word-count= wordcount(page.content)
-              span.post-meta__separator |
-              span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
-  else
-    div#top-container.plain
-      include ./includes/header.pug
+<div class="img-place-holder">
 
-block content
-  article#post(class="")
-    if (!top_img)
-      #post-title.plain= page.title || _p('no_title')
-      #post-meta
-        if (theme.post_meta.date_type)
-          - var date_type = theme.post_meta.date_type === 'updated' ? '' : 'date'
-          time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
-        if (theme.post_meta.categories && page.categories.data.length > 0)
-          if (theme.post_meta.date_type)
-            span.post-meta__separator |
-          each item, index in page.categories.data
-            i.fa.fa-inbox(aria-hidden="true")
-            a(href=url_for(item.path)).post-meta__categories  #[=item.name]
-            if (index < page.categories.data.length - 1)
-                i.fa.fa-angle-right.post-meta__separator(aria-hidden="true")
-        if (theme.disqus.enable && theme.disqus.count)
-          if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
-            span.post-meta__separator |
-          i.fa.fa-comment-o(aria-hidden="true")
-          a(href=url_for(page.path) + '#disqus_thread')
-            span.disqus-comment-count(data-disqus-identifier=page.path)
-        if (theme.wordcount && theme.wordcount.enable)
-          span.post-meta__separator |
-          span.post-meta-wordcount
-            span= _p('post.wordcount') + ': '
-            span.word-count= wordcount(page.content)
-            span.post-meta__separator |
-            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
-    #post-content.article-container!= page.content
-  if (theme.post_copyright && theme.post_copyright.enable)
-    .post-copyright
-      .post-copyright__author
-        span.post-copyright-meta= _p('post.copyright.author') + ": "
-        span.post-copyright-info
-          a(href=`mailto:${config.email}`) #[=config.author]
-      .post-copyright__type
-        span.post-copyright-meta= _p('post.copyright.link') + ": "
-        span.post-copyright-info
-          a(href=url_for(page.permalink)) #[=page.permalink]
-      .post-copyright__notice
-        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
-        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
-  if (theme.post_meta.tags)
-    .post-meta__tag-list
-      each item, index in page.tags.data
-        a(href=url_for(item.path)).post-meta__tags #[=item.name]
-  if (theme.QR_code)
-    if (theme.QR_code.length > 0)
-      .post-qr-code
-        each item in theme.QR_code
-          .post-qr-code-item
-            img.post-qr-code__img(src=(item.itemlist||item).img)
-            .post-qr-code__desc=(item.itemlist||item).text
-  include includes/share/index.pug
-  include includes/pagination.pug
-  if (theme.adv && theme.adv.enable)
-    .post-adv!= theme.adv.info
-  if page.comments !== false
-    include includes/comments/index.pug
+</div>
+
+<div class="content-inner">
+
+<div class="question">
+
+<div class="answer">
+
+<p>**<br><img src="http://pic1.zhimg.com/v2-00db4f9d8d1fc96b2955625f823dcbcc_is.jpg" alt=""><br><span class="author">瞬间思路，</span><span class="bio">桌游自媒体人 公众号名称：瞬间思路</span><br><a href="https://www.zhihu.com/question/265645236/answer/836710728" target="_blank" rel="noopener">查看知乎原文</a><br>**</p>
+<div class="content">
+
+<p>正好之前写过一个东西，只是一种游戏机制的内容，希望能帮上忙：</p>
+<p>关于这些游戏的选择会符合以下几个前提：</p>
+<p><strong>1、都是我实际玩过的游戏，没玩过的不纳入考虑</strong></p>
+<p><strong>2、假定情景为一次以桌游为主题的线下聚会，玩家大多为新人或轻度玩家，不希望游戏过程太过爆脑、繁琐或复杂，尽量男女通吃</strong></p>
+<p><strong>3、尽量以国内目前能够买到，有中文版的为优先选择</strong></p>
+<p><strong>4、完全以我个人兴趣为推荐标准，没考虑客观和全面这两事</strong></p>
+<p><strong>5、一时没想到第五点，以后想到再添上……</strong></p>
+<p>现在先要说说什么是 <strong>板块放置类游戏</strong>。</p>
+<p><strong>“板块放置”</strong>是桌游专业网站 BGG 对现有桌游机制所进行的划分之一，即 <strong>Tile Placement</strong>，是一种较为常见的游戏机制，顾名思义就是将板块放置在桌面上，大多数情况下这些板块会在游戏进程中按照一定规则进行拼接和组合，生成游戏地图、产生游戏效果等等，玩起来有一种在桌面上拼俄罗斯方块的既视感。（最近 BGG 机制划分变更了，暂且无视，还按照之前的来写）</p>
+<p><strong>【多米诺王国】</strong></p>
+<p><img src="http://pic1.zhimg.com/70/v2-74b9853ac02db3f763b7e8e167c0f99c_r.jpg" alt=""></p>
+<p>《多米诺王国》是一款非常适合新人的 板块放置类游戏，游戏的主要组成部件为 48 块背后带有数字编号（1-48）的地形板块，每个板块都是由两个正方形地形组成的尺寸相同的矩形。而这些地形则包括草地、森林、水域、沼泽、沙漠、矿坑等。</p>
+<p>游戏开始前玩家们只有一个孤零零的正方形城堡板块作为固定起始（也就是 48 个矩形板块的一半大小）接下来要做的就是在固定的回合内尽可能令自己的领土面积扩张且令其具有更高的分值。</p>
+<p>游戏中玩家们要按照每回合的顺位排序从随即翻出的板块中选择自己需要的地形板块拼接到自己的领地中，而这个领地的有效大小被固定为 5X5，也就是 25 个正方形单位。当然既然有不同地形划分，那么首先要求的就是尽可能让相同的地形板块连接在一起，然后通过该地形具有皇冠的板块来令其最后可被计分。也就是说连接在一起的同样板块数量是基数，而该地形中代有皇冠数量则是倍数，游戏结束后两者相乘就是该地形的得分。</p>
+<p>当然，游戏进行起来可没这么简单，一来翻出的板块都是随即的，但地形和皇冠数字的分布却并不平均，如矿坑这样代有皇冠数量很多的地形却只会出现在编号较大的一些板块里，反之草地、森林、水域、沙漠这些非常容易拿到的地形却很难带有高倍数的皇冠。但由于游戏游戏摆放的有效区域只有那 5X5 的范围，因此如何根据翻出的地形规划自己的领地发展，并且根据翻出的数字编号来推测后面某些特定板块的出现概率从而预留发展空间都是非常重要的策略所在。另外游戏本身还有很多额外的得分规则和计分模式，令这个非常简单的游戏有着出乎意料的耐玩程度。</p>
+<p><strong>中文出版：新天鹅堡</strong></p>
+<p><strong>【可可亚】</strong></p>
+<p><img src="http://pic1.zhimg.com/70/v2-6d6341025f731bfe35c72b86fb58bd84_r.jpg" alt=""></p>
+<p>可可果曾被称为”神之果实“，《可可亚》就将玩家们带到了盛产可可果的部落之中，玩家们扮演部落酋长，带着全部族的成员种植、采集和交易可可果，从而走上一条农业致富科技创新……反正就是在靠劳动挣钱的光荣致富道路上，奔向小康生活。</p>
+<p>与前面介绍的《多米诺王国》相比，《可可亚》在摆放板块时要思考的元素更多、更杂一些不同的地形板块中可以带来获得金币、生产可可国、卖出可可果等效果。但启动这些效果则需要玩家将自己的部落板块放置在这些效果板块旁边，而且部落板块上的四个边会有 0-3 位不等的部落成员，这些成员数量决定了相邻效果板块上的效果能被触发几次。这就要求玩家们在摆放这两类板块的时候都要仔细思考和规划，同时还要尽可能减少对手获益的可能以及从对手摆放的板块中去”蹭“到所需的效果。</p>
+<p>由于《可可亚》中除了摆放板块之外，还要考虑到可可果的交易才能兑换到金币，但每个人的可可果存储量又有上限，所以这就在摆放板块和获胜条件之间增加了一层思考因素：可可果收集和兑换的节奏，只有掌握好这个节奏才可能获胜。假如《多米诺王国》已经让你觉得有些简单，那么《可可亚》会带来多了一层思维纬度的游戏体验。</p>
+<p><strong>中文出版：玩乐小子</strong></p>
+<p><strong>【熊熊公园】</strong></p>
+<p><img src="http://pic4.zhimg.com/70/v2-c29105ac38d8e0c86448001b955be9e7_r.jpg" alt=""></p>
+<p>最初会买《熊熊公园》纯粹因为这个主题，之前去登别旅游的时候在当地参观了有趣的熊公园，对，就是这个公园里只有熊！！！只有熊大、熊二……连光头强都没有。当时觉得很有意思，回来一查才发现世界各地竟然有很多专门给熊们准备的“熊公园”，这才开始体验这款游戏，结果不玩不知道，一玩吓一跳：还真好玩！</p>
+<p>在这个桌游的熊公园里生活着 戈壁熊（棕熊的亚种，生活在沙漠地带）、北极熊、大熊猫 和 无尾熊（考拉）……不过这个 无尾熊 它不是熊啊？！什么情况？原来设计师 Phil Walker-Harding 老兄似乎就是澳大利亚人……好吧，合情合理。顺便说一句，刚才提到的《可可亚》也出自他的手笔。</p>
+<p>游戏开始时，每位玩家都会获得一个带有“熊公园”正门的“公园区域板块”，上面还分布着工程车辆、施工人员、工程围挡等等，而桌子中间的蓝图版图上则放着等待建造的公园建筑，这些建筑虽然分成四种不同的动物区域。但绝大部分是有多块相同形状的板块，以及一些河流、绿地、游乐设施，甚至厕所。另外还有一些特殊形状的板块，这就是“围栏区”板块，什么意思？就是露天式的大型熊围栏，这些板块的特点是：造型奇特、面积大、分数高，以及只有一块，手快有手慢无！</p>
+<p>游戏中，玩家们就是要通过获取这些不同形状和分值的板块拼接起来，力争获得最高分数成为赢家。</p>
+<p>不过，除了主要层面上的拼出一个熊公园之外，玩家们还要注意可以通过获取的“成就板块”在游戏结束时获得额外分数，例如“拥有三个北极熊板块”“拥有连续不中断的三个河流板块”等等，在大家明面分数相差无几的情况下，成就分数可能让你反败为胜（当然，不注意的话，也可能反胜为败）。</p>
+<p>另外，游戏中有趣之处在于需要通过覆盖玩家的“公园区域板块”上不同的工程车辆、施工人员等获取不同板块，并驱动游戏进行 。因此在获得板块并覆盖的时候，会决定了接下来你是否能够获得期望中性价比最高的板块。这就对玩家获取和摆放板块都提出了一些比较长远的规划要求，只看眼前是肯定不行的。</p>
+<p>简单说一句话：想经营好一个只有熊的公园也不是个容易事！</p>
+<p><strong>中文出版：玩乐小子</strong></p>
+<p><strong>【首都华沙】</strong></p>
+<p><img src="http://pic1.zhimg.com/70/v2-aa493308020fa76b27eb1d613d4e6ac8_r.jpg" alt=""></p>
+<p>买《首都华沙》纯粹是个意外，在下单之前我甚至都不知道这个游戏。正好当时我在做一个和波兰桌游有关的选题，网上搜游戏配图的时候偶然发现了竟然有个就叫《首都华沙》的游戏，而且还有中文版！立刻拿下，而最后游戏体验还是令我满意的。</p>
+<p>华沙是波兰首都，却被称为“从自己的死亡里幸存下来的城市”，这和这座城市经历的多灾多难的历史不无关系，尤其是第二次世界大战中这座城市几乎被战火化为废墟，但庆幸的是这座城市最终浴火重生。而且由于这些历史原因，令华沙的建筑特色充满了历史发展的痕迹，而建造一个全新的华沙城区就是这个游戏的目的。</p>
+<p>不得不说“板块放置”这个机制很适合构建地图，而构建一座现实中的城市就更加合拍了，同步率 400%，105 块游戏板块将构成华沙的全新市貌。</p>
+<p>《首都华沙》的特点在于除了拼接板块建造城市之外，还按照历史为轴将游戏划分为六个时期，也就是从 16 世纪末华沙成为首都直到近代。这样就等于将游戏切分为六个阶段，每阶段结束时都会进行一次计分，最后得分最高的人就是赢家。</p>
+<p>纵向上游戏按照历史划分六个阶段，横向上则是各种历史时期的建筑会纷纷登场，其中包括按照功能划分（颜色不同）的生活区、工业区、商业区等普通板块，也有代表了华沙历史文化标志的特殊建筑板块，例如 19 世纪作为市政厅的迦布隆诺斯基宫殿，修建于 1781 年的 圣三一福音教会，波兰国家机场 欧凯西机场，每年接待超过一百万游客的 哥白尼科学中心等等……这些特殊建筑都有与众不同的效果，如何利用这些效果也是游戏重要的思考策略之一。</p>
+<p><em>TIP：游戏中甚至设计了两次世界大战会导致第三和第四阶段结束时有建筑板块被强制摧毁，但一方面这可能会带来损失，可另一方面却为玩家提供了一次重新规划城区建设的机会，这一点也和现实中战争所带来的结果十分类似。</em></p>
+<p><strong>中文出版：哿哿桌游</strong></p>
+<p><strong>【斯凯岛】</strong></p>
+<p><img src="http://pic2.zhimg.com/70/v2-df2d73fd8b07f70b548bdea5283f3fd5_r.jpg" alt=""></p>
+<p>《斯凯岛》是今天推荐的五款板块放置类游戏中相对最为复杂的一个，游戏的本质固然也是 获得板块 - 放置板块 - 结算计分 这样的整体流程，但由于游戏中加入了许多更为细节的规则和结算，令游戏的难度超过了前面几款作品。</p>
+<p>除了按照不同地形，不同元素收集板块并按照地形地貌的要求进行拼接之外，《斯凯岛》的设计比前几个作品更强调玩家之间的互动。游戏通过将钱币和板块进行价格估算和相互兑换的方式，为游戏中插入了“购买”这个概念，并让钱币价值作为放置板块和游戏获胜之间的一个中间层，连接两端，同时也为玩家的策略提供了博弈思考的新维度。</p>
+<p>另一方面，游戏的计分方式很独特，每次计分阶段都可能是完全不同的计分要素，这就对玩家提前进行中长期规划提出了一定要求，很可能初期快速得分的玩家却因为缺少长远布局而在后面的回合中惨败，</p>
+<p>总之，如果前面几款作品你都感到有些简单的时候，《斯凯岛》会成为一个非常值得推荐的选择。</p>
+<p><strong>中文出版：玩乐小子</strong></p>
+<p><em>TIP：说到 板块放置 游戏，还有著名的《卡卡颂》系列也是可以对入门玩家吐血推荐的，但由于这个系列知名度太高，且所属游戏太多，独立成文也绰绰有余，所以没有收录在这五个游戏中。</em></p>
+</div>
+</div>
+
+<div class="view-more">[查看知乎讨论<span class="js-question-holder"></span>](http://www.zhihu.com/question/265645236)</div>
+
+</div>
+
+</div>
+</div></div></div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">ZhengYoufu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yoursite.com/2019/11/02/%E7%8E%A9%E6%A1%8C%E6%B8%B8%E5%85%A5%E9%97%A8%E5%8F%AF%E4%BB%A5%E4%BB%8E%E5%93%AA%E4%BA%9B%E6%B8%B8%E6%88%8F%E5%BC%80%E5%A7%8B%EF%BC%9F/">http://yoursite.com/2019/11/02/%E7%8E%A9%E6%A1%8C%E6%B8%B8%E5%85%A5%E9%97%A8%E5%8F%AF%E4%BB%A5%E4%BB%8E%E5%93%AA%E4%BA%9B%E6%B8%B8%E6%88%8F%E5%BC%80%E5%A7%8B%EF%BC%9F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/11/02/%E6%9C%89%E5%93%AA%E4%BA%9B%E6%9C%89%E8%B6%A3%E7%9A%84%E8%87%AA%E7%84%B6%E7%A7%91%E6%99%AE%E4%B9%A6%E7%B1%8D%E5%80%BC%E5%BE%97%E6%8E%A8%E8%8D%90%EF%BC%9F/"><i class="fa fa-chevron-left">  </i><span>有哪些有趣的自然科普书籍值得推荐？</span></a></div><div class="next-post pull-right"><a href="/2019/11/02/hello-world/"><span>Hello World</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By ZhengYoufu</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
