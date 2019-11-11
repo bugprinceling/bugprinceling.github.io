@@ -1,0 +1,261 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="spark-c2"><meta name="keywords" content="rdd分区,rdd的shuffle,rdd的缓存,spark原理"><meta name="author" content="ZhengYoufu"><meta name="copyright" content="ZhengYoufu"><title>spark-c2 | ZhengYoufu</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#rdd的特性"><span class="toc-number">1.</span> <span class="toc-text">rdd的特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rdd的分区与shuffle"><span class="toc-number">2.</span> <span class="toc-text">rdd的分区与shuffle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缓存"><span class="toc-number">3.</span> <span class="toc-text">缓存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#checkpoint"><span class="toc-number">4.</span> <span class="toc-text">checkpoint</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#spark原理"><span class="toc-number">5.</span> <span class="toc-text">spark原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rdd分布式共享变量"><span class="toc-number">6.</span> <span class="toc-text">rdd分布式共享变量</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">ZhengYoufu</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">8</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">13</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">8</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">推荐阅读</div><a class="author-info-links__name text-center" href="http://www.uisdc.com/" target="_blank" rel="noopener">优设</a><a class="author-info-links__name text-center" href="http://www.zhangxinxu.com/" target="_blank" rel="noopener">张鑫旭</a><a class="author-info-links__name text-center" href="http://www.alloyteam.com/nav/" target="_blank" rel="noopener">Web前端导航</a><a class="author-info-links__name text-center" href="http://www.36zhen.com/t?id=3448" target="_blank" rel="noopener">前端书籍资料</a><a class="author-info-links__name text-center" href="http://ife.baidu.com/" target="_blank" rel="noopener">百度前端技术学院</a><a class="author-info-links__name text-center" href="http://wf.uisdc.com/cn/" target="_blank" rel="noopener">google前端开发基础</a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">ZhengYoufu</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">spark-c2</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-11-12</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/spark/">spark</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/spark/spark-core/">spark core</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/spark/spark-core/rdd%E5%88%86%E5%8C%BA%E5%92%8Cshuffler/">rdd分区和shuffler</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h3 id="rdd的特性"><a href="#rdd的特性" class="headerlink" title="rdd的特性"></a>rdd的特性</h3><p>RDD的特点</p>
+<ul>
+<li>RDD是数据集也是编程模型</li>
+<li>RDD是只读的</li>
+<li>RDD是可分区的</li>
+</ul>
+<p>RDD是弹性分布式数据集</p>
+<p>弹性</p>
+<ul>
+<li><p>容错:其中一个task出错，会自动根据血统重新进行计算</p>
+</li>
+<li><p>数据保存:当内存不够的时候，会自动保存在磁盘</p>
+</li>
+</ul>
+<p>分布式</p>
+<ul>
+<li>RDD是可分区的，每个分区对应一个task,最后task会分配到不同的节点执行</li>
+</ul>
+<p>数据集</p>
+<ul>
+<li>RDD本身默认是不保存数据，只会保存数据存储的位置</li>
+<li>RDD当缓存的时候，有可以保存数据</li>
+</ul>
+<p>RDD的五大属性</p>
+<ul>
+<li>RDD有一组分区列表</li>
+<li>RDD与RDD有依赖关系</li>
+<li>RDD有作用在分片的函数</li>
+<li>分区函数</li>
+<li>优先位置</li>
+</ul>
+<h3 id="rdd的分区与shuffle"><a href="#rdd的分区与shuffle" class="headerlink" title="rdd的分区与shuffle"></a>rdd的分区与shuffle</h3><ol>
+<li>分区的作用：</li>
+</ol>
+<p>rdd使用分区来分布式并行处理数据，并且要做到尽量少的在不同的 Executor 之间使用网络交换数据, 所以当使用 RDD 读取数据的时候, 会尽量的在物理上靠近数据源 ，尽量rdd分区数，分区模式和数据源保持一致</p>
+<ol start="2">
+<li>分区和 Shuffle 的关系</li>
+</ol>
+<p>分区的主要作用是用来实现并行计算，本质上和shuffle没有什么关系，但是往往在处理数据的时候，例如reduceByKey等聚合操作需要把key和value拉到一起计算，但是这些key相同的value可能坐落在不同的分区，于是理解分区才能理解shuffle的原理</p>
+<ol start="3">
+<li>Spark 中的 Shuffle 操作的特点 </li>
+</ol>
+<p>只有key-value型的rdd才会有shuffle操作，例如rdd[(k,v)],但是有个特例，就是 <strong>repartition</strong> 算子可以对任何数据类型 Shuffle </p>
+<ol start="4">
+<li><p>shuffle是什么</p>
+<p>为了让来自相同 Key 的所有数据都在 <code>reduceByKey</code> 的同一个 <code>reduce</code> 中处理, 需要执行一个 <code>all-to-all</code> 的操作, 需要在不同的节点(不同的分区)之间拷贝数据, 必须跨分区聚集相同 Key 的所有数据, 这个过程叫做 <code>Shuffle</code>. </p>
+</li>
+</ol>
+<p>rdd的shuffle原理</p>
+<p>Hash base shuffle</p>
+<p>大致的原理是分桶, 假设 Reducer 的个数为 R, 那么每个 Mapper 有 R 个桶, 按照 Key 的 Hash 将数据映射到不同的桶中, Reduce 找到每一个 Mapper 中对应自己的桶拉取数据.</p>
+<p>假设 Mapper 的个数为 M, 整个集群的文件数量是 M * R, 如果有 1,000 个 Mapper 和 Reducer, 则会生成 1,000,000 个文件, 这个量非常大了.</p>
+<p>过多的文件会导致文件系统打开过多的文件描述符, 占用系统资源. 所以这种方式并不适合大规模数据的处理, 只适合中等规模和小规模的数据处理, 在 Spark 1.2 版本中废弃了这种方式.</p>
+<p>sort base shuffle</p>
+<p><img src="shuffle.png" alt="shuffle"></p>
+<h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><ol>
+<li>使用缓存的意义</li>
+</ol>
+<p>使用缓存的原因-多次使用rdd</p>
+<p>使用缓存的原因-容错</p>
+<ol start="2">
+<li>cache，persist缓存</li>
+</ol>
+<p>注意：cache设置缓存返回一个新的对象，需要重新赋值给rdd,persist可以指定缓存级别，使用unpersist可清除缓存，也即是把persisit参数设置为NONE</p>
+<ol start="3">
+<li>缓存级别</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>缓存级别</th>
+<th><code>userDisk</code> 是否使用磁盘</th>
+<th><code>useMemory</code> 是否使用内存</th>
+<th><code>useOffHeap</code> 是否使用堆外内存</th>
+<th><code>deserialized</code> 是否以反序列化形式存储</th>
+<th><code>replication</code> 副本数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>NONE</code></td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>DISK_ONLY</code></td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>DISK_ONLY_2</code></td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>MEMORY_ONLY</code></td>
+<td>false</td>
+<td>true</td>
+<td>false</td>
+<td>true</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>MEMORY_ONLY_2</code></td>
+<td>false</td>
+<td>true</td>
+<td>false</td>
+<td>true</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>MEMORY_ONLY_SER</code></td>
+<td>false</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>MEMORY_ONLY_SER_2</code></td>
+<td>false</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>MEMORY_AND_DISK</code></td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>true</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>MEMORY_AND_DISK</code></td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>true</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>MEMORY_AND_DISK_SER</code></td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>MEMORY_AND_DISK_SER_2</code></td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>OFF_HEAP</code></td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<ol start="4">
+<li>如何选择分区级别</li>
+</ol>
+<p>默认是MEMORY_ONLY，rdd上的操作运行更快</p>
+<p>MEMORY_ONLY_SER  将对象序列化到内存中，节省空间同时快速访问数据</p>
+<p>不要溢出到磁盘，除非计算您的数据集的函数是昂贵的，或者它们过滤大量的数据。否则，重新计算分区可能与从磁盘读取分区一样快.</p>
+<p>如果需要快速故障恢复，请使用复制的存储级别 </p>
+<h3 id="checkpoint"><a href="#checkpoint" class="headerlink" title="checkpoint"></a>checkpoint</h3><ol start="5">
+<li>checkpoint的作用</li>
+</ol>
+<p>checkpoint主要是用来斩断rdd依赖链，将数据储存到可靠的存储引擎中，如支持分布式和副本机制的hdfs上</p>
+<p>什么是斩断依赖？</p>
+<p>Checkpoint 和 Cache 的区别 </p>
+<p>1.cache将数据保存在内存中或者本地的磁盘中，但是当这台服务器宕机了，那么数据也就不能访问了，checkpoint可以将数据保存在hdfs上</p>
+<p>2.checkpoint可以斩断rdd依赖，cache,pertist不能</p>
+<p>3.因为 CheckpointRDD 没有向上的依赖链, 所以程序结束后依然存在, 不会被删除. 而 Cache 和 Persist 会在程序结束后立刻被清除. </p>
+<ol start="6">
+<li>小细节</li>
+</ol>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> interimRDD = sc.textFile(<span class="string">"dataset/access_log_sample.txt"</span>) .map(item =&gt; (item.split(<span class="string">" "</span>)(<span class="number">0</span>), <span class="number">1</span>)) .filter(item =&gt; <span class="type">StringUtils</span>.isNotBlank(item<span class="number">.1</span>)) .reduceByKey((curr, agg) =&gt; curr + agg) .cache()  interimRDD.checkpoint() interimRDD.collect().foreach(println())</span><br></pre></td></tr></table></figure>
+
+<p>没有设置cache上面代码会被计算两次，一次是collect一次是checkpoint，所以设置checkpoint之前先进行cache可以减少计算。执行collect启动job计算结果并进行cache缓存,checkpoint启动job使用cache缓存的数据保存到hdfs上</p>
+<p><img src="cache.png" alt="缓存之前图"></p>
+<p><img src="cache2.png" alt="缓存之后图"></p>
+<h3 id="spark原理"><a href="#spark原理" class="headerlink" title="spark原理"></a>spark原理</h3><p>集群的环境</p>
+<ol>
+<li><p>spark的提交流程</p>
+<p>1、Driver向资源管理器注册任务，申请计算资源<br>2、资源管理器[master]会筛选出资源充足的worker</p>
+<p>3、通知worker启动executor<br>4、executor向Driver反向注册，申请计算任务<br>5、Driver提交task到executor中执行</p>
+<p>Driver操作:<br>1、运行主类的main方法<br>2、创建SparkCOntext对象，sparkcontext是spark程序的入口，因为创建了DAGSchduler与taskSchduler<br>3、根据算子先后顺序，构建DAG有向无环图<br>4、DAGSchduler拿到DAG有向无环图之后，根据宽依赖进行stage的切分，stage中有很多的RDD，每一个分  区对应一个task,会将stage的所有的task进行封装，封装成taskset放入底层任务调度器中执行<br>5、taskSchduler拿到taskset，会根据stage的依赖关系[从左到右串行执行],遍历taskset，将taskset中的每个       task提交到executor中执行6、当所有的task都执行完成之后，向资源管理器注销自己，释放资源</p>
+</li>
+<li><p>逻辑执行图</p>
+<p>1、逻辑执行图就是表达数据处理的过程<br>2、RDD的依赖关系</p>
+<ul>
+<li><p>宽依赖</p>
+</li>
+<li><p>窄依赖</p>
+</li>
+<li><p>如何区分宽依赖与窄依赖？</p>
+<p>宽依赖存在shuffle，不存在shuffle的为窄依赖</p>
+</li>
+</ul>
+</li>
+<li><p>物理执行图</p>
+<p>就是根据逻辑执行图，将job划分为stage放入到集群中执行</p>
+<pre><code>job：就是一次求值的过程
+stage: 阶段，一个job划分为多个stage，根据shuffle进行划分
+task：运行在executor上的任务，stage中包含多个task，一个分区一个task</code></pre></li>
+</ol>
+<p><img src="spark1.png" alt="spark原理图"></p>
+<p><img src="spark2.png" alt="spark执行流程图"></p>
+<h3 id="rdd分布式共享变量"><a href="#rdd分布式共享变量" class="headerlink" title="rdd分布式共享变量"></a>rdd分布式共享变量</h3><ol>
+<li>累加器</li>
+</ol>
+<p>spark自带累加器：longAccumulator()，doubleAccumulator()，等</p>
+<p>自定义累加器：extends AccumulatorV2[input,output]() input输入数据类型，output输入数据类型 override其中的方法。</p>
+<p>isZero判断变量是否为空</p>
+<p>reSet清空集合</p>
+<p>copy</p>
+<p>add将数据源中的元素添加到set集合中</p>
+<p>merge合并各个分区的数据</p>
+<p>value返回结果</p>
+<ol start="2">
+<li>广播</li>
+</ol>
+<p>操作API：</p>
+<p>1.创建对象：val broadcast=sparkContext.broadcast()</p>
+<p>2.取值：broadcast.value</p>
+<p>使用场景：</p>
+<p>1.spark进行优化的时候使用广播可以减少shuffle操作</p>
+<p>2.当所有task需要一份共同数据的时候</p>
+<p>认情况下，当所有的task都需要一份共同数据的时候，这个共同数据占用的总空间大小 = task的个数 * 数据的大小<br>使用广播变量之后，这个共同数据占用的总空间大小 = executor的个数 * 数据的大小</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">ZhengYoufu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yoursite.com/2019/11/12/spark-c2/">http://yoursite.com/2019/11/12/spark-c2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/rdd%E5%88%86%E5%8C%BA/">rdd分区</a><a class="post-meta__tags" href="/tags/rdd%E7%9A%84shuffle/">rdd的shuffle</a><a class="post-meta__tags" href="/tags/rdd%E7%9A%84%E7%BC%93%E5%AD%98/">rdd的缓存</a><a class="post-meta__tags" href="/tags/spark%E5%8E%9F%E7%90%86/">spark原理</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/11/12/sparksql-c1/"><i class="fa fa-chevron-left">  </i><span>sparksql-c1</span></a></div><div class="next-post pull-right"><a href="/2019/11/07/spark-c1/"><span>spark-c1</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By ZhengYoufu</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

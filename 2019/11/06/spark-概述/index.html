@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="spark"><meta name="keywords" content="spark,RDD,算子"><meta name="author" content="ZhengYoufu"><meta name="copyright" content="ZhengYoufu"><title>spark | ZhengYoufu</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#spark概述"><span class="toc-number">1.</span> <span class="toc-text">spark概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#spark的架构模块"><span class="toc-number">2.</span> <span class="toc-text">spark的架构模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#spark主要模块介绍"><span class="toc-number">2.1.</span> <span class="toc-text">spark主要模块介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#spark运行模式"><span class="toc-number">2.2.</span> <span class="toc-text">spark运行模式</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">ZhengYoufu</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">8</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">13</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">8</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">推荐阅读</div><a class="author-info-links__name text-center" href="http://www.uisdc.com/" target="_blank" rel="noopener">优设</a><a class="author-info-links__name text-center" href="http://www.zhangxinxu.com/" target="_blank" rel="noopener">张鑫旭</a><a class="author-info-links__name text-center" href="http://www.alloyteam.com/nav/" target="_blank" rel="noopener">Web前端导航</a><a class="author-info-links__name text-center" href="http://www.36zhen.com/t?id=3448" target="_blank" rel="noopener">前端书籍资料</a><a class="author-info-links__name text-center" href="http://ife.baidu.com/" target="_blank" rel="noopener">百度前端技术学院</a><a class="author-info-links__name text-center" href="http://wf.uisdc.com/cn/" target="_blank" rel="noopener">google前端开发基础</a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">ZhengYoufu</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">spark</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-11-06</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/spark/">spark</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/spark/spark-core/">spark core</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/spark/spark-core/rdd/">rdd</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h3 id="spark概述"><a href="#spark概述" class="headerlink" title="spark概述"></a>spark概述</h3><ol>
+<li><p>spark是什么</p>
+<p>spark是一种快速，多用途的集群计算系统，spark是基于内存计算的大数据并行计算框架。spark基于内存计算，提高了大数据环境下数据处理的实时性，同时保证了高容错性和高可伸缩性，允许用户将spark部署到大量廉价硬件上，形成集群。</p>
+</li>
+<li><p>为什么要用spark</p>
+<p>spark是类似于mapreduce的通用的并行计算框架，基于map reduce算法实现的分布式计算，拥有mapreduce所具有的优点，但是mapreduce中间输出结果保存在磁盘上，spark中间数据结果保存在内存中从而不需要读取hdfs速度更快</p>
+<p>MR的问题：</p>
+<p>​    1、计算过程比较缓慢，不适应交互式计算，不适应迭代计算</p>
+<p>​    2、不是所有的计算都有Map和Reduce两个尖酸构成的</p>
+<p>Sprak解决问题：</p>
+<p>​    1、内存存储中间结果  2、提供更高的API、处理函数式</p>
+</li>
+<li><p>spark为什么比mapreduce快</p>
+<p>mapreduce的map结果保存在磁盘上，reduce保存在hdfs上。mapreduceTask都是进程级别</p>
+<p>spark数据首先保存在内存，只有内存不够才会保存到本地磁盘。spark的task是线程级别</p>
+</li>
+<li><p>spark特点</p>
+<ul>
+<li><p>快</p>
+<p>与Hadoop的MapReduce相比，Spark基于内存的运算要快100倍以上，基于硬盘的运算也要快10倍以上。Spark实现了高效的DAG执行引擎，可以通过基于内存来高效处理数据流。</p>
+</li>
+<li><p>易用</p>
+<p>Spark支持Java、Python和Scala的API，还支持超过80种高级算法，使用户可以快速构建不同的应用。而且Spark支持交互式的Python和Scala的shell，可以非常方便地在这些shell中使用Spark集群来验证解决问题的方法。</p>
+</li>
+<li><p>通用</p>
+<p>Spark提供了统一的解决方案。Spark可以用于批处理、交互式查询（Spark SQL）、实时流处理（Spark Streaming）、机器学习（Spark MLlib）和图计算（GraphX）。这些不同类型的处理都可以在同一个应用中无缝使用。Spark统一的解决方案非常具有吸引力，毕竟任何公司都想用统一的平台去处理遇到的问题，减少开发和维护的人力成本和部署平台的物力成本。</p>
+</li>
+<li><p>兼容性</p>
+<p>Spark可以非常方便地与其他的开源产品进行融合。比如，Spark可以使用Hadoop的YARN和Apache Mesos作为它的资源管理和调度器，器，并且可以处理所有Hadoop支持的数据，包括HDFS、HBase和Cassandra等。这对于已经部署Hadoop集群的用户特别重要，因为不需要做任何数据迁移就可以使用Spark的强大处理能力。Spark也可以不依赖于第三方的资源管理和调度器，它实现了Standalone作为其内置的资源管理和调度框架，这样进一步降低了Spark的使用门槛，使得所有人都可以非常容易地部署和使用Spark。此外，Spark还提供了在EC2上部署Standalone的Spark集群的工具。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="spark的架构模块"><a href="#spark的架构模块" class="headerlink" title="spark的架构模块"></a>spark的架构模块</h3><h4 id="spark主要模块介绍"><a href="#spark主要模块介绍" class="headerlink" title="spark主要模块介绍"></a>spark主要模块介绍</h4><p><strong>Spark Core</strong>：实现了 Spark 的基本功能，包含任务调度、内存管理、错误恢复、与存储系统 交互等模块。Spark Core 中还包含了对弹性分布式数据集(resilient distributed dataset，简称RDD)的 API 定义。<br><strong>Spark SQL</strong>：是 Spark 用来操作结构化数据的程序包。通过 Spark SQL，我们可以使用 SQL 或者 Apache Hive 版本的 SQL 方言(HQL)来查询数据。Spark SQL 支持多种数据源，比 如 Hive 表、Parquet 以及 JSON 等。<br><strong>Spark Streaming</strong>：是 Spark 提供的对实时数据进行流式计算的组件。提供了用来操作数据流的 API，并且与 Spark Core 中的 RDD API 高度对应。<br><strong>Spark MLlib</strong>：提供常见的机器学习(ML)功能的程序库。包括分类、回归、聚类、协同过滤等，还提供了模型评估、数据 导入等额外的支持功能。<br><strong>集群管理器</strong>：Spark 设计为可以高效地在一个计算节点到数千个计算节点之间伸缩计 算。为了实现这样的要求，同时获得最大灵活性，Spark 支持在各种集群管理器(cluster manager)上运行，包括 Hadoop YARN、Apache Mesos，以及 Spark 自带的一个简易调度 器，叫作独立调度器。</p>
+<ol>
+<li><p>spark运行角色的介绍</p>
+<p><strong>master</strong>：主节点进程，在整个集群中，最多只有一个Master处于Active状态。使用spark-shell交互运行Driver运行在Master节点中使用spark-submit工具或idea等开发工具Driver运行在本地客户端。</p>
+<p><strong>worker</strong>：从节点进程，类似于yarn中的NodeManager，在整个集群中，可以有多个Worker（&gt;0）。负责当前WorkerNode上的资源汇报、监督当前节点运行的Executor。并通过心跳机制来保持和Master的存活性连接。Executor受到Worker掌控，一个Worker启动Executor的个数受限于机器中CPU核数。每个Worker节点存在一个多个CoarseGrainedExecutorBackend进程，每个进程包含一个Executor对象，该对象持有一个线程池，每个线程执行一个Task。</p>
+<p><strong>Application</strong>：指的是用户编写的Spark应用程序，包含了含有一个Driver功能的代码和分布在集群中多个节点上运行的Executor代码。</p>
+<p><strong>Driver</strong>:运行Application的main函数并创建SparkContext，SparkContext的目的是为了准备Spark应用程序的运行环境。SparkContext负责资源的申请、任务分配和监控等。当Executor运行结束后，Driver负责关闭SparkContext；</p>
+<p><strong>Job</strong>：一个Application可以产生多个Job，其中Job由Spark Action触发产生。每个Job包含多个Task组成的并行计算。</p>
+<p><strong>RDD</strong>：Spark基本计算单元，是Spark最核心的东西。表示已被分区、被序列化、不可变的、有容错机制的、能被并行操作的数据集合。</p>
+</li>
+</ol>
+<h4 id="spark运行模式"><a href="#spark运行模式" class="headerlink" title="spark运行模式"></a>spark运行模式</h4><ol>
+<li><p>本地模式</p>
+<p>spark的单机模式，不用启动任何服务进程，使用本地线程来模拟spark的运行，适用于开发调试</p>
+</li>
+<li><p>standAlone模式</p>
+<p>使用master+slave构成的spark集群，spark内部自己做资源调度，不依赖其他框架</p>
+</li>
+<li><p>spark on yarn模式</p>
+<p>只需要一台安装了spark的节点，此时spark作为客户端将任务提交到yarn集群上，通过yarn来分配资源来执行任务</p>
+</li>
+<li><p>spark on mesos模式</p>
+<p>类似spark on yarn，只是此时资源管理器为mesos</p>
+</li>
+</ol>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">ZhengYoufu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yoursite.com/2019/11/06/spark-%E6%A6%82%E8%BF%B0/">http://yoursite.com/2019/11/06/spark-%E6%A6%82%E8%BF%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/spark/">spark</a><a class="post-meta__tags" href="/tags/RDD/">RDD</a><a class="post-meta__tags" href="/tags/%E7%AE%97%E5%AD%90/">算子</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/11/07/spark-c1/"><i class="fa fa-chevron-left">  </i><span>spark-c1</span></a></div><div class="next-post pull-right"><a href="/2019/11/05/Markdown%E5%86%85%E5%AE%B9%E7%BC%96%E8%BE%91/"><span>Markdown内容编辑</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By ZhengYoufu</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
